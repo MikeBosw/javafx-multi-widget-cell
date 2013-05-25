@@ -8,21 +8,18 @@ package com.bosworth.javafx.cell;
 import javafx.scene.Node;
 import javafx.scene.control.Cell;
 
-public abstract class CellWidgetHelper<W extends Node, T> {
+/**
+ * Helps to embed a widget {@code W} in a single {@link Cell}. If more than one cell needs to be edited at the same
+ * time, multiple {@code CellWidgetHelper} instances should be used.
+ *
+ * @param <W> The type of {@link Node} that this CellWidgetHelper helps to embed in a {@link Cell}.
+ * @param <T> The {@link Cell}'s values' type.
+ */
+public interface CellWidgetHelper<W extends Node, T> {
 
-    private Cell<T> cell;
+    W getWidget(Cell<T> cell);
 
-    protected Cell<T> getCell() {
-        return cell;
-    }
+    void onStartEdit(Cell<T> cell, T item);
 
-    protected void setCell(Cell<T> cell) {
-        this.cell = cell;
-    }
-
-    public abstract W getWidget();
-
-    public abstract void onStartEdit(T item);
-
-    public abstract void onUpdate(T item);
+    void onUpdate(Cell<T> cell, T item);
 }

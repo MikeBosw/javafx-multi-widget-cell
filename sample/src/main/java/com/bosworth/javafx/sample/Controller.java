@@ -31,6 +31,9 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         _fooColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("aString"));
         _barColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("bString"));
+        final DefaultStringConverter converter = new DefaultStringConverter();
+        final TextFieldCellHelper<String> helperA = new TextFieldCellHelper<>(converter);
+        final CellWidgetHelper<ComboBox<String>, String> helperB = new ComboBoxCellHelper<>();
         _barColumn.setCellFactory(new Callback<TableColumn<StringPair, String>, TableCell<StringPair, String>>() {
             @Override
             public TableCell<StringPair, String> call(TableColumn<StringPair, String> col) {
@@ -38,19 +41,17 @@ public class Controller implements Initializable {
                     @Override
                     public void decide(String value, CellWidgetDecidable cwd) {
                         if (value == null || value.isEmpty()) {
+                            cwd.use(helperA);
                             return;
                         }
                         if (value.toUpperCase().charAt(0) >= 'N') {
-                            cwd.useWidgetB();
+                            cwd.use(helperA);
                         } else {
-                            cwd.useWidgetA();
+                            cwd.use(helperB);
                         }
                     }
                 };
-                final DefaultStringConverter converter = new DefaultStringConverter();
-                final TextFieldCellHelper<String> helperA = new TextFieldCellHelper<>(converter);
-                final CellWidgetHelper<ComboBox<String>, String> helperB = new ComboBoxCellHelper<>();
-                return new TwoWidgetTableCell<>(helperA, helperB, decider);
+                return new MultiWidgetTableCell<>(decider);
             }
         });
 

@@ -1,12 +1,14 @@
 package com.bosworth.javafx.cell;
 
+import com.sun.istack.internal.Nullable;
+
 /**
- * Decides which of two widgets should be used in a cell, based on the cell's value.
+ * Decides what widget should be used in a cell.
  *
- * @param <T>
+ * @param <T> The {@link javafx.scene.control.Cell}'s values' type.
  */
 public interface CellWidgetDecider<T> {
 
-    void decide(T value, CellWidgetDecidable cell);
+    void decide(@Nullable T value, CellWidgetDecidable cell);
 
 }

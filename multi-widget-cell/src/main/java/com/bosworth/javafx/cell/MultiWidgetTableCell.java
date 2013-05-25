@@ -10,59 +10,58 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 
-public class TwoWidgetTableCell<W1 extends Node, W2 extends Node, S, T> extends TableCell<S, T> implements CellWidgetDecidable {
-    private final CellWidgetHelper<W1, T> widgetAHelper;
-    private final CellWidgetHelper<W2, T> widgetBHelper;
+public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellWidgetDecidable<T> {
     private CellWidgetHelper<?, T> currentWidgetHelper;
 
-    public TwoWidgetTableCell(CellWidgetHelper<W1, T> widgetAHelper,
-                              CellWidgetHelper<W2, T> widgetBHelper,
-                              final CellWidgetDecider<T> decider) {
+    public MultiWidgetTableCell(final CellWidgetDecider<T> decider) {
         super();
-        widgetAHelper.setCell(this);
-        widgetBHelper.setCell(this);
-        this.widgetAHelper = widgetAHelper;
-        this.widgetBHelper = widgetBHelper;
-        currentWidgetHelper = widgetAHelper;
+        decider.decide(null, this);
         itemProperty().addListener(new ChangeListener<T>() {
             @Override
             public void changed(ObservableValue<? extends T> observableValue, T t, T t2) {
-                decider.decide(t2, TwoWidgetTableCell.this);
+                decider.decide(t2, MultiWidgetTableCell.this);
             }
         });
     }
 
-    @Override
-    public void useWidgetA() {
-        currentWidgetHelper = widgetAHelper;
-    }
-
-    @Override
-    public void useWidgetB() {
-        currentWidgetHelper = widgetBHelper;
-    }
-
     /** {@inheritDoc} */
-    @Override public void startEdit() {
+    @Override
+    public void startEdit() {
         super.startEdit();
-        final Node widget = currentWidgetHelper.getWidget();
+        if (!allowEditing()) {
+            return;
+        }
+        final Node widget = currentWidgetHelper.getWidget(this);
         setText(null);
         setGraphic(widget);
         final T item = getItem();
-        currentWidgetHelper.onStartEdit(item);
+        currentWidgetHelper.onStartEdit(this, item);
+    }
+
+    private boolean allowEditing() {
+        if (!isEditable()) {
+            return false;
+        } else if ((getTableView() != null && !getTableView().isEditable())) {
+            return false;
+        } else if ((getTableColumn() != null && !getTableColumn().isEditable())) {
+            return false;
+        }
+        return true;
     }
 
     /** {@inheritDoc} */
-    @Override public void cancelEdit() {
+    @Override
+    public void cancelEdit() {
         super.cancelEdit();
         setText(getItemText());
         setGraphic(null);
     }
 
     /** {@inheritDoc} */
-    @Override public void updateItem(T item, boolean empty) {
+    @Override
+    public void updateItem(T item, boolean empty) {
         super.updateItem(item, empty);
-        final Node widget = currentWidgetHelper.getWidget();
+        final Node widget = currentWidgetHelper.getWidget(this);
         if (isEmpty()) {
             setText(null);
             setGraphic(null);
@@ -71,7 +70,7 @@ public class TwoWidgetTableCell<W1 extends Node, W2 extends Node, S, T> extends 
                 setText(null);
                 setGraphic(widget);
                 if (widget != null) {
-                    currentWidgetHelper.onUpdate(item);
+                    currentWidgetHelper.onUpdate(this, item);
                 }
             } else {
                 setText(getItemText());
@@ -82,5 +81,10 @@ public class TwoWidgetTableCell<W1 extends Node, W2 extends Node, S, T> extends 
 
     private String getItemText() {
         return getItem() != null ? getItem().toString() : "";
+    }
+
+    @Override
+    public void use(CellWidgetHelper<? extends Node, T> widget) {
+        currentWidgetHelper = widget;
     }
 }
