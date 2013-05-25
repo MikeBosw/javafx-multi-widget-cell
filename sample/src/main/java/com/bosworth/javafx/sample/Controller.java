@@ -29,26 +29,34 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         _fooColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("aString"));
+
         _barColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("bString"));
+        //1. this helper will be used when we want a TextField widget in the cell
         final TextFieldCellHelper<String> helperA = TextFieldCellHelper.create();
+
+        //2. this helper will be used when we want a ComboBox widget in the cell
         final CellWidgetHelper<ComboBox<String>, String> helperB = ComboBoxCellHelper.create();
+
+        //3. create the decider to make the choice
+        final CellWidgetDecider<String> decider = new CellWidgetDecider<String>() {
+            @Override
+            public void decide(String value, CellWidgetDecidable cwd) {
+                if (value == null || value.isEmpty()) {
+                    cwd.use(helperA);
+                    return;
+                }
+                if (value.toUpperCase().charAt(0) >= 'N') {
+                    cwd.use(helperA);
+                } else {
+                    cwd.use(helperB);
+                }
+            }
+        };
+
+        //4. go
         _barColumn.setCellFactory(new Callback<TableColumn<StringPair, String>, TableCell<StringPair, String>>() {
             @Override
             public TableCell<StringPair, String> call(TableColumn<StringPair, String> col) {
-                CellWidgetDecider<String> decider = new CellWidgetDecider<String>() {
-                    @Override
-                    public void decide(String value, CellWidgetDecidable cwd) {
-                        if (value == null || value.isEmpty()) {
-                            cwd.use(helperA);
-                            return;
-                        }
-                        if (value.toUpperCase().charAt(0) >= 'N') {
-                            cwd.use(helperA);
-                        } else {
-                            cwd.use(helperB);
-                        }
-                    }
-                };
                 return new MultiWidgetTableCell<>(decider);
             }
         });
