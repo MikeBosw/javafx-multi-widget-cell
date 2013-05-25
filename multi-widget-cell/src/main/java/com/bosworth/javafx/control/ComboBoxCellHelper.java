@@ -13,15 +13,21 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
 
 public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
 
     private final ComboBox<T> comboBox;
     private boolean initialized;
-    private Cell<T> _currentCell;
+    private Cell<T> currentCell;
 
-    public ComboBoxCellHelper() {
+    public static ComboBoxCellHelper<String> create() {
+        return new ComboBoxCellHelper<>(new DefaultStringConverter());
+    }
+
+    public ComboBoxCellHelper(StringConverter<T> converter) {
         comboBox = new ComboBox<>();
+        comboBox.setConverter(converter);
         comboBox.setMaxWidth(Double.MAX_VALUE);
     }
 
@@ -31,7 +37,7 @@ public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
             public void handle(KeyEvent t) {
                 final Cell<T> cell = getCurrentCell();
                 if (t.getCode() == KeyCode.ENTER) {
-                    final StringConverter<T> sc = comboBox.converterProperty().get();
+                    final StringConverter<T> sc = comboBox.getConverter();
                     final String text = comboBox.getEditor().getText();
                     final T value = sc.fromString(text);
                     cell.commitEdit(value);
@@ -53,12 +59,12 @@ public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
     }
 
     private Cell<T> getCurrentCell() {
-        return _currentCell;
+        return currentCell;
     }
 
     @Override
     public ComboBox<T> getWidget(final Cell<T> cell) {
-        _currentCell = cell;
+        currentCell = cell;
         if (!initialized) {
             initialize();
         }

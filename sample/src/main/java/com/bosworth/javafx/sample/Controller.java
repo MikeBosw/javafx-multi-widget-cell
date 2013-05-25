@@ -13,7 +13,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
-import javafx.util.converter.DefaultStringConverter;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,9 +30,8 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         _fooColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("aString"));
         _barColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("bString"));
-        final DefaultStringConverter converter = new DefaultStringConverter();
-        final TextFieldCellHelper<String> helperA = new TextFieldCellHelper<>(converter);
-        final CellWidgetHelper<ComboBox<String>, String> helperB = new ComboBoxCellHelper<>();
+        final TextFieldCellHelper<String> helperA = TextFieldCellHelper.create();
+        final CellWidgetHelper<ComboBox<String>, String> helperB = ComboBoxCellHelper.create();
         _barColumn.setCellFactory(new Callback<TableColumn<StringPair, String>, TableCell<StringPair, String>>() {
             @Override
             public TableCell<StringPair, String> call(TableColumn<StringPair, String> col) {

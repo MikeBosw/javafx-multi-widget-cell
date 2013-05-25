@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
 
 public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
 
@@ -18,6 +19,10 @@ public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
     private final StringConverter<T> converter;
     private boolean initialized;
     private Cell<T> _currentCell;
+
+    public static TextFieldCellHelper<String> create() {
+        return new TextFieldCellHelper<>(new DefaultStringConverter());
+    }
 
     public TextFieldCellHelper(StringConverter<T> converter) {
         this.converter = converter;
