@@ -15,11 +15,11 @@ public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellW
 
     public MultiWidgetTableCell(final CellWidgetDecider<T> decider) {
         super();
-        decider.decide(null, this);
+        decider.decide(this);
         itemProperty().addListener(new ChangeListener<T>() {
             @Override
             public void changed(ObservableValue<? extends T> observableValue, T t, T t2) {
-                decider.decide(t2, MultiWidgetTableCell.this);
+                decider.decide(MultiWidgetTableCell.this);
             }
         });
     }

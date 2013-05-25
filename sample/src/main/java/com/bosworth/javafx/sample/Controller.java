@@ -7,10 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -40,15 +37,16 @@ public class Controller implements Initializable {
         //3. create the decider to make the choice
         final CellWidgetDecider<String> decider = new CellWidgetDecider<String>() {
             @Override
-            public void decide(String value, CellWidgetDecidable cwd) {
+            public <C extends Cell<String> & CellWidgetDecidable<String>> void decide(C cell) {
+                final String value = cell.getItem();
                 if (value == null || value.isEmpty()) {
-                    cwd.use(helperA);
+                    cell.use(helperA);
                     return;
                 }
                 if (value.toUpperCase().charAt(0) >= 'N') {
-                    cwd.use(helperA);
+                    cell.use(helperA);
                 } else {
-                    cwd.use(helperB);
+                    cell.use(helperB);
                 }
             }
         };

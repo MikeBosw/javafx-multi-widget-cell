@@ -1,6 +1,6 @@
 package com.bosworth.javafx.control;
 
-import com.sun.istack.internal.Nullable;
+import javafx.scene.control.Cell;
 
 /**
  * Decides what widget should be used in a cell.
@@ -9,6 +9,6 @@ import com.sun.istack.internal.Nullable;
  */
 public interface CellWidgetDecider<T> {
 
-    void decide(@Nullable T value, CellWidgetDecidable cell);
+    <C extends Cell<T> & CellWidgetDecidable<T>> void decide(C cell);
 
 }

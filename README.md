@@ -22,7 +22,6 @@ Use MultiWidgetTableCell in your TableView. The MultiWidgetTableCell constructor
 From the sample module:
 
 ```java
-
 //1. this helper will be used when we want a TextField widget in the cell
 final TextFieldCellHelper<String> helperA = TextFieldCellHelper.create();
 
@@ -32,25 +31,25 @@ final CellWidgetHelper<ComboBox<String>, String> helperB = ComboBoxCellHelper.cr
 //3. create the decider to make the choice
 final CellWidgetDecider<String> decider = new CellWidgetDecider<String>() {
     @Override
-    public void decide(String value, CellWidgetDecidable cwd) {
+    public <C extends Cell<String> & CellWidgetDecidable<String>> void decide(C cell) {
+        final String value = cell.getItem();
         if (value == null || value.isEmpty()) {
-            cwd.use(helperA);
+            cell.use(helperA);
             return;
         }
         if (value.toUpperCase().charAt(0) >= 'N') {
-            cwd.use(helperA);
+            cell.use(helperA);
         } else {
-            cwd.use(helperB);
+            cell.use(helperB);
         }
     }
 };
 
 //4. go
-_column.setCellFactory(new Callback<TableColumn<StringPair, String>, TableCell<StringPair, String>>() {
+_barColumn.setCellFactory(new Callback<TableColumn<StringPair, String>, TableCell<StringPair, String>>() {
     @Override
     public TableCell<StringPair, String> call(TableColumn<StringPair, String> col) {
         return new MultiWidgetTableCell<>(decider);
     }
 });
-
 ```
