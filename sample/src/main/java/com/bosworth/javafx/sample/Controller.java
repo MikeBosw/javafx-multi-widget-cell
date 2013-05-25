@@ -1,6 +1,6 @@
 package com.bosworth.javafx.sample;
 
-import com.bosworth.javafx.cell.*;
+import com.bosworth.javafx.control.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;

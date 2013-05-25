@@ -1,4 +1,4 @@
-package com.bosworth.javafx.cell;
+package com.bosworth.javafx.control;
 
 import javafx.scene.Node;
 

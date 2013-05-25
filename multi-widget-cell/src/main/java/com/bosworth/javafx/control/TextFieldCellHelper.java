@@ -3,7 +3,7 @@
  * @author Michael Anselm Bosworth
  * Due to a perverse and unpleasing character, Michael has not commented this class.
  */
-package com.bosworth.javafx.cell;
+package com.bosworth.javafx.control;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Cell;
