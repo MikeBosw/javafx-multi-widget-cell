@@ -20,12 +20,15 @@ public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
     private final ComboBox<T> comboBox;
     private boolean initialized;
     private Cell<T> currentCell;
+    private final WidgetActivationListener<ComboBox<T>, T> listener;
 
-    public static ComboBoxCellHelper<String> create() {
-        return new ComboBoxCellHelper<>(new DefaultStringConverter());
+    /** convenience factory method for ComboBoxes containing Strings **/
+    public static ComboBoxCellHelper<String> create(WidgetActivationListener<ComboBox<String>, String> listener) {
+        return new ComboBoxCellHelper<>(new DefaultStringConverter(), listener);
     }
 
-    public ComboBoxCellHelper(StringConverter<T> converter) {
+    public ComboBoxCellHelper(StringConverter<T> converter, WidgetActivationListener<ComboBox<T>, T> listener) {
+        this.listener = listener;
         comboBox = new ComboBox<>();
         comboBox.setConverter(converter);
         comboBox.setMaxWidth(Double.MAX_VALUE);
@@ -68,6 +71,7 @@ public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
         if (!initialized) {
             initialize();
         }
+        listener.activate(comboBox, cell);
         return comboBox;
     }
 

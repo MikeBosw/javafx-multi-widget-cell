@@ -7,6 +7,7 @@ package com.bosworth.javafx.control;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Cell;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -18,14 +19,22 @@ public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
     private final TextField textField = new TextField();
     private final StringConverter<T> converter;
     private boolean initialized;
-    private Cell<T> _currentCell;
+    private Cell<T> currentCell;
+    private final WidgetActivationListener<TextField, T> listener;
 
+    /** convenience factory method for TextFields containing Strings **/
     public static TextFieldCellHelper<String> create() {
-        return new TextFieldCellHelper<>(new DefaultStringConverter());
+        return create(new WidgetActivationAdapter<TextField, String>());
     }
 
-    public TextFieldCellHelper(StringConverter<T> converter) {
+    /** convenience factory method for TextFields containing Strings **/
+    public static TextFieldCellHelper<String> create(WidgetActivationListener<TextField, String> listener) {
+        return new TextFieldCellHelper<>(new DefaultStringConverter(), listener);
+    }
+
+    public TextFieldCellHelper(StringConverter<T> converter, WidgetActivationListener<TextField, T> listener) {
         this.converter = converter;
+        this.listener = listener;
     }
 
     private void initialize() {
@@ -48,12 +57,17 @@ public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
         initialized = true;
     }
 
+    private Cell<T> getCurrentCell() {
+        return currentCell;
+    }
+
     @Override
     public TextField getWidget(final Cell<T> cell) {
-        _currentCell = cell;
+        currentCell = cell;
         if (!initialized) {
             initialize();
         }
+        listener.activate(textField, cell);
         return textField;
     }
 
@@ -66,9 +80,5 @@ public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
     @Override
     public void onUpdate(Cell<T> cell, T item) {
         textField.setText(item == null ? "" : item.toString());
-    }
-
-    private Cell<T> getCurrentCell() {
-        return _currentCell;
     }
 }

@@ -26,13 +26,15 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         _fooColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("aString"));
-
         _barColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("bString"));
-        //1. this helper will be used when we want a TextField widget in the cell
+
+        //1. the TextFieldCellHelper will be used when we want a TextField widget in the cell
         final TextFieldCellHelper<String> helperA = TextFieldCellHelper.create();
 
-        //2. this helper will be used when we want a ComboBox widget in the cell
-        final CellWidgetHelper<ComboBox<String>, String> helperB = ComboBoxCellHelper.create();
+        //2. the ComboBoxCellHelper will be used when we want a ComboBox widget in the cell
+        final ComboBoxCellHelper<String> helperB = ComboBoxCellHelper.create(
+                new WidgetActivationAdapter<ComboBox<String>, String>()
+        );
 
         //3. create the decider to make the choice
         final CellWidgetDecider<String> decider = new CellWidgetDecider<String>() {
