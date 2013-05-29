@@ -7,7 +7,6 @@ package com.bosworth.javafx.control;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Cell;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -67,7 +66,6 @@ public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
         if (!initialized) {
             initialize();
         }
-        listener.activate(textField, cell);
         return textField;
     }
 
@@ -75,6 +73,7 @@ public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
     public void onStartEdit(Cell<T> cell, T item) {
         textField.setText(item == null ? "" : item.toString());
         textField.selectAll();
+        listener.activate(textField, cell);
     }
 
     @Override

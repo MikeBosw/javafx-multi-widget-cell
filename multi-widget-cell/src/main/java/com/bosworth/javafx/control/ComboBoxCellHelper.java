@@ -71,7 +71,6 @@ public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
         if (!initialized) {
             initialize();
         }
-        listener.activate(comboBox, cell);
         return comboBox;
     }
 
@@ -79,6 +78,7 @@ public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
     public void onStartEdit(Cell<T> cell, T item) {
         comboBox.setEditable(true);
         comboBox.getSelectionModel().select(item);
+        listener.activate(comboBox, cell);
     }
 
     @Override
