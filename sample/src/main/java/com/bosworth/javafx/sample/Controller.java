@@ -17,73 +17,77 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
 
     @FXML
-    private TableView<StringPair> _fooBarTableView;
+    private TableView<FooBar> _fooBarTableView;
     @FXML
-    private TableColumn<StringPair, String> _fooColumn;
+    private TableColumn<FooBar, String> _fooColumn;
     @FXML
-    private TableColumn<StringPair, String> _barColumn;
+    private TableColumn<FooBar, String> _barColumn;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        _fooColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("aString"));
-        _barColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("bString"));
-
+    private CellWidgetDecider<MultiWidgetTableCell<FooBar, String>, String> createDecider() {
         //1. the TextFieldCellHelper will be used when we want a TextField widget in the cell
-        final TextFieldCellHelper<MultiWidgetTableCell<StringPair, String>, String> helperA = TextFieldCellHelper.create();
+        final TextFieldCellHelper<MultiWidgetTableCell<FooBar, String>, String> h1 = TextFieldCellHelper.create();
 
         //2. the ComboBoxCellHelper will be used when we want a ComboBox widget in the cell
-        final ComboBoxCellHelper<MultiWidgetTableCell<StringPair, String>, String> helperB = ComboBoxCellHelper.create(
-                new WidgetActivationAdapter<MultiWidgetTableCell<StringPair, String>, ComboBox<String>, String>()
+        final ComboBoxCellHelper<MultiWidgetTableCell<FooBar, String>, String> h2 = ComboBoxCellHelper.create(
+                /** optionally pass an activation listener in here to get a callback when the ComboBox is displayed **/
         );
 
-        //3. create the decider to make the choice
-        final CellWidgetDecider<MultiWidgetTableCell<StringPair, String>, String> decider = new CellWidgetDecider<MultiWidgetTableCell<StringPair, String>, String>() {
+        //3. create the decider to make the call on which widget to use
+        final MultiWidgetTableCell.Decider<FooBar, String> d = new MultiWidgetTableCell.Decider<FooBar, String>() {
             @Override
-            public void decide(MultiWidgetTableCell<StringPair, String> cell) {
+            public void decide(MultiWidgetTableCell<FooBar, String> cell) {
                 final String value = cell.getItem();
                 if (value == null || value.isEmpty()) {
-                    cell.use(helperA);
+                    cell.use(h1);
                     return;
                 }
                 if (value.toUpperCase().charAt(0) >= 'N') {
-                    cell.use(helperA);
+                    cell.use(h1);
                 } else {
-                    cell.use(helperB);
+                    cell.use(h2);
                 }
             }
         };
 
-        //4. go
-        _barColumn.setCellFactory(new Callback<TableColumn<StringPair, String>, TableCell<StringPair, String>>() {
+        return d;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        _fooColumn.setCellValueFactory(new PropertyValueFactory<FooBar, String>("foo"));
+        _barColumn.setCellValueFactory(new PropertyValueFactory<FooBar, String>("bar"));
+
+        _barColumn.setCellFactory(new Callback<TableColumn<FooBar, String>, TableCell<FooBar, String>>() {
             @Override
-            public TableCell<StringPair, String> call(TableColumn<StringPair, String> col) {
-                return new MultiWidgetTableCell<>(decider);
+            public TableCell<FooBar, String> call(TableColumn<FooBar, String> col) {
+                return new MultiWidgetTableCell<>(createDecider());
             }
         });
 
-        final ObservableList<StringPair> list = FXCollections.observableArrayList();
-        list.add(new StringPair("foo", "bar"));
-        list.add(new StringPair("bar", "foo"));
+        final ObservableList<FooBar> list = FXCollections.observableArrayList();
+        list.add(new FooBar("foo", "bar"));
+        list.add(new FooBar("bar", "foo"));
         _fooBarTableView.setItems(list);
     }
 
-    public class StringPair {
-        private final StringProperty aString, bString;
+    public class FooBar {
+        private final StringProperty foo, bar;
 
         @FXML
-        public StringProperty aStringProperty() {
-            return aString;
+        public StringProperty fooProperty() {
+            return foo;
         }
 
         @FXML
-        public StringProperty bStringProperty() {
-            return bString;
+        public StringProperty barProperty() {
+            return bar;
         }
 
-        private StringPair(String aString, String bString) {
-            this.aString = new SimpleStringProperty(aString);
-            this.bString = new SimpleStringProperty(bString);
+        private FooBar(String foo, String bar) {
+            this.foo = new SimpleStringProperty(foo);
+            this.bar = new SimpleStringProperty(bar);
         }
     }
+
 
 }

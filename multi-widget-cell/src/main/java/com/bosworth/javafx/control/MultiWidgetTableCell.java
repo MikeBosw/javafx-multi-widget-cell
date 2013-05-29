@@ -1,7 +1,7 @@
 /**
+ * A TableCell whose choice of editing widget can be determined dynamically.
  *
  * @author Michael Anselm Bosworth
- * Due to a perverse and unpleasing character, Michael has not commented this class.
  */
 package com.bosworth.javafx.control;
 
@@ -15,7 +15,6 @@ public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellW
 
     public MultiWidgetTableCell(final CellWidgetDecider<MultiWidgetTableCell<S, T>, T> decider) {
         super();
-        decider.decide(this);
         itemProperty().addListener(new ChangeListener<T>() {
             @Override
             public void changed(ObservableValue<? extends T> observableValue, T t, T t2) {
@@ -28,7 +27,7 @@ public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellW
     @Override
     public void startEdit() {
         super.startEdit();
-        if (!allowEditing()) {
+        if (!allowEditing() || currentWidgetHelper == null) {
             return;
         }
         final Node widget = currentWidgetHelper.getWidget(this);
@@ -61,6 +60,9 @@ public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellW
     @Override
     public void updateItem(T item, boolean empty) {
         super.updateItem(item, empty);
+        if (currentWidgetHelper == null) {
+            return;
+        }
         final Node widget = currentWidgetHelper.getWidget(this);
         if (isEmpty()) {
             setText(null);
@@ -87,4 +89,6 @@ public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellW
     public void use(CellWidgetHelper<MultiWidgetTableCell<S, T>, ? extends Node, T> widget) {
         currentWidgetHelper = widget;
     }
+
+    public static interface Decider<S, T> extends CellWidgetDecider<MultiWidgetTableCell<S, T>, T> {}
 }

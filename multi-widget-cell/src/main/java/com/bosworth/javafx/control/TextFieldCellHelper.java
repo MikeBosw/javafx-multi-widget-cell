@@ -80,4 +80,6 @@ public class TextFieldCellHelper<C extends Cell<T>, T> implements CellWidgetHelp
     public void onUpdate(C cell, T item) {
         textField.setText(item == null ? "" : item.toString());
     }
+
+    public static interface ActivationListener<C extends Cell<T>, T> extends WidgetActivationListener<C, TextField, T> {}
 }

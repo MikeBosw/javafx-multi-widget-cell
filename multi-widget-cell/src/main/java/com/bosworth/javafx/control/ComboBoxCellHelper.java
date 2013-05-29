@@ -23,6 +23,12 @@ public class ComboBoxCellHelper<C extends Cell<T>, T> implements CellWidgetHelpe
     private final WidgetActivationListener<C, ComboBox<T>, T> listener;
 
     /** convenience factory method for ComboBoxes containing Strings **/
+    public static <C extends Cell<String>> ComboBoxCellHelper<C, String> create() {
+        final WidgetActivationListener<C, ComboBox<String>, String> adapter = new WidgetActivationAdapter<>();
+        return create(adapter);
+    }
+
+    /** convenience factory method for ComboBoxes containing Strings **/
     public static <C extends Cell<String>> ComboBoxCellHelper<C, String> create(WidgetActivationListener<C, ComboBox<String>, String> listener) {
         return new ComboBoxCellHelper<>(new DefaultStringConverter(), listener);
     }
@@ -85,4 +91,6 @@ public class ComboBoxCellHelper<C extends Cell<T>, T> implements CellWidgetHelpe
     public void onUpdate(C cell, T item) {
         comboBox.getSelectionModel().select(item);
     }
+
+    public static interface ActivationListener<C extends Cell<T>, T> extends WidgetActivationListener<C, ComboBox<T>, T> {}
 }

@@ -9,8 +9,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Cell;
 
 /**
- * Helps to embed a widget {@code W} in a single {@link Cell}. If more than one cell needs to be edited at the same
- * time, multiple {@code CellWidgetHelper} instances should be used.
+ * Helps to embed a widget {@code W} in a single {@link Cell}. A separate {@code CellWidgetHelper} instance should be
+ * used for each cell.
  *
  * @param <W> The type of {@link Node} that this CellWidgetHelper helps to embed in a {@link Cell}.
  * @param <T> The {@link Cell}'s values' type.

@@ -23,30 +23,30 @@ From the sample module:
 
 ```java
 //1. the TextFieldCellHelper will be used when we want a TextField widget in the cell
-final TextFieldCellHelper<String> helperA = TextFieldCellHelper.create();
+final TextFieldCellHelper<MultiWidgetTableCell<FooBar, String>, String> h1 = TextFieldCellHelper.create();
 
 //2. the ComboBoxCellHelper will be used when we want a ComboBox widget in the cell
-final ComboBoxCellHelper<String> helperB = ComboBoxCellHelper.create(
-        new WidgetActivationAdapter<ComboBox<String>, String>()
+final ComboBoxCellHelper<MultiWidgetTableCell<FooBar, String>, String> h2 = ComboBoxCellHelper.create(
+        /** optionally pass an activation listener in here to get a callback when the ComboBox is displayed **/
 );
 
-//3. create the decider to make the choice
-final CellWidgetDecider<String> decider = new CellWidgetDecider<String>() {
+//3. create the decider to make the call on which widget to use
+final MultiWidgetTableCell.Decider<FooBar, String> d = new MultiWidgetTableCell.Decider<FooBar, String>() {
     @Override
-    public <C extends Cell<String> & CellWidgetDecidable<String>> void decide(C cell) {
+    public void decide(MultiWidgetTableCell<FooBar, String> cell) {
         final String value = cell.getItem();
         if (value == null || value.isEmpty()) {
-            cell.use(helperA);
+            cell.use(h1);
             return;
         }
         if (value.toUpperCase().charAt(0) >= 'N') {
-            cell.use(helperA);
+            cell.use(h1);
         } else {
-            cell.use(helperB);
+            cell.use(h2);
         }
     }
 };
 
 //4. go
-_barColumn.setCellFactory((col) -> { return new MultiWidgetTableCell<>(decider); });
+return new MultiWidgetTableCell<>(d);
 ```
