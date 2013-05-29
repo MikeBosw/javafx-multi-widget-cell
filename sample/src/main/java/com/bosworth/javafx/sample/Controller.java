@@ -29,17 +29,17 @@ public class Controller implements Initializable {
         _barColumn.setCellValueFactory(new PropertyValueFactory<StringPair, String>("bString"));
 
         //1. the TextFieldCellHelper will be used when we want a TextField widget in the cell
-        final TextFieldCellHelper<String> helperA = TextFieldCellHelper.create();
+        final TextFieldCellHelper<MultiWidgetTableCell<StringPair, String>, String> helperA = TextFieldCellHelper.create();
 
         //2. the ComboBoxCellHelper will be used when we want a ComboBox widget in the cell
-        final ComboBoxCellHelper<String> helperB = ComboBoxCellHelper.create(
-                new WidgetActivationAdapter<ComboBox<String>, String>()
+        final ComboBoxCellHelper<MultiWidgetTableCell<StringPair, String>, String> helperB = ComboBoxCellHelper.create(
+                new WidgetActivationAdapter<MultiWidgetTableCell<StringPair, String>, ComboBox<String>, String>()
         );
 
         //3. create the decider to make the choice
-        final CellWidgetDecider<String> decider = new CellWidgetDecider<String>() {
+        final CellWidgetDecider<MultiWidgetTableCell<StringPair, String>, String> decider = new CellWidgetDecider<MultiWidgetTableCell<StringPair, String>, String>() {
             @Override
-            public <C extends Cell<String> & CellWidgetDecidable<String>> void decide(C cell) {
+            public void decide(MultiWidgetTableCell<StringPair, String> cell) {
                 final String value = cell.getItem();
                 if (value == null || value.isEmpty()) {
                     cell.use(helperA);

@@ -15,19 +15,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
 
-public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
+public class ComboBoxCellHelper<C extends Cell<T>, T> implements CellWidgetHelper<C, ComboBox<T>, T> {
 
     private final ComboBox<T> comboBox;
     private boolean initialized;
     private Cell<T> currentCell;
-    private final WidgetActivationListener<ComboBox<T>, T> listener;
+    private final WidgetActivationListener<C, ComboBox<T>, T> listener;
 
     /** convenience factory method for ComboBoxes containing Strings **/
-    public static ComboBoxCellHelper<String> create(WidgetActivationListener<ComboBox<String>, String> listener) {
+    public static <C extends Cell<String>> ComboBoxCellHelper<C, String> create(WidgetActivationListener<C, ComboBox<String>, String> listener) {
         return new ComboBoxCellHelper<>(new DefaultStringConverter(), listener);
     }
 
-    public ComboBoxCellHelper(StringConverter<T> converter, WidgetActivationListener<ComboBox<T>, T> listener) {
+    public ComboBoxCellHelper(StringConverter<T> converter, WidgetActivationListener<C, ComboBox<T>, T> listener) {
         this.listener = listener;
         comboBox = new ComboBox<>();
         comboBox.setConverter(converter);
@@ -66,7 +66,7 @@ public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
     }
 
     @Override
-    public ComboBox<T> getWidget(final Cell<T> cell) {
+    public ComboBox<T> getWidget(C cell) {
         currentCell = cell;
         if (!initialized) {
             initialize();
@@ -75,14 +75,14 @@ public class ComboBoxCellHelper<T> implements CellWidgetHelper<ComboBox<T>, T> {
     }
 
     @Override
-    public void onStartEdit(Cell<T> cell, T item) {
+    public void onStartEdit(C cell, T item) {
         comboBox.setEditable(true);
         comboBox.getSelectionModel().select(item);
         listener.activate(comboBox, cell);
     }
 
     @Override
-    public void onUpdate(Cell<T> cell, T item) {
+    public void onUpdate(C cell, T item) {
         comboBox.getSelectionModel().select(item);
     }
 }

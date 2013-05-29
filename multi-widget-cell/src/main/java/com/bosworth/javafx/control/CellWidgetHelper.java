@@ -15,11 +15,11 @@ import javafx.scene.control.Cell;
  * @param <W> The type of {@link Node} that this CellWidgetHelper helps to embed in a {@link Cell}.
  * @param <T> The {@link Cell}'s values' type.
  */
-public interface CellWidgetHelper<W extends Node, T> {
+public interface CellWidgetHelper<C extends Cell<T>, W extends Node, T> {
 
-    W getWidget(Cell<T> cell);
+    W getWidget(C cell);
 
-    void onStartEdit(Cell<T> cell, T item);
+    void onStartEdit(C cell, T item);
 
-    void onUpdate(Cell<T> cell, T item);
+    void onUpdate(C cell, T item);
 }

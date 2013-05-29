@@ -7,8 +7,8 @@ import javafx.scene.control.Cell;
  *
  * @param <T> The {@link javafx.scene.control.Cell}'s values' type.
  */
-public interface CellWidgetDecider<T> {
+public interface CellWidgetDecider<C extends Cell<T> & CellWidgetDecidable<C, T>, T> {
 
-    <C extends Cell<T> & CellWidgetDecidable<T>> void decide(C cell);
+    void decide(C cell);
 
 }

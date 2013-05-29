@@ -10,10 +10,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 
-public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellWidgetDecidable<T> {
-    private CellWidgetHelper<?, T> currentWidgetHelper;
+public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellWidgetDecidable<MultiWidgetTableCell<S, T>, T> {
+    private CellWidgetHelper<MultiWidgetTableCell<S, T>, ?, T> currentWidgetHelper;
 
-    public MultiWidgetTableCell(final CellWidgetDecider<T> decider) {
+    public MultiWidgetTableCell(final CellWidgetDecider<MultiWidgetTableCell<S, T>, T> decider) {
         super();
         decider.decide(this);
         itemProperty().addListener(new ChangeListener<T>() {
@@ -84,7 +84,7 @@ public class MultiWidgetTableCell<S, T> extends TableCell<S, T> implements CellW
     }
 
     @Override
-    public void use(CellWidgetHelper<? extends Node, T> widget) {
+    public void use(CellWidgetHelper<MultiWidgetTableCell<S, T>, ? extends Node, T> widget) {
         currentWidgetHelper = widget;
     }
 }

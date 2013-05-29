@@ -13,25 +13,25 @@ import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
 
-public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
+public class TextFieldCellHelper<C extends Cell<T>, T> implements CellWidgetHelper<C, TextField, T> {
 
     private final TextField textField = new TextField();
     private final StringConverter<T> converter;
     private boolean initialized;
     private Cell<T> currentCell;
-    private final WidgetActivationListener<TextField, T> listener;
+    private final WidgetActivationListener<C, TextField, T> listener;
 
     /** convenience factory method for TextFields containing Strings **/
-    public static TextFieldCellHelper<String> create() {
-        return create(new WidgetActivationAdapter<TextField, String>());
+    public static <C extends Cell<String>> TextFieldCellHelper<C, String> create() {
+        return create(new WidgetActivationAdapter<C, TextField, String>());
     }
 
     /** convenience factory method for TextFields containing Strings **/
-    public static TextFieldCellHelper<String> create(WidgetActivationListener<TextField, String> listener) {
+    public static <C extends Cell<String>> TextFieldCellHelper<C, String> create(WidgetActivationListener<C, TextField, String> listener) {
         return new TextFieldCellHelper<>(new DefaultStringConverter(), listener);
     }
 
-    public TextFieldCellHelper(StringConverter<T> converter, WidgetActivationListener<TextField, T> listener) {
+    public TextFieldCellHelper(StringConverter<T> converter, WidgetActivationListener<C, TextField, T> listener) {
         this.converter = converter;
         this.listener = listener;
     }
@@ -61,7 +61,7 @@ public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
     }
 
     @Override
-    public TextField getWidget(final Cell<T> cell) {
+    public TextField getWidget(final C cell) {
         currentCell = cell;
         if (!initialized) {
             initialize();
@@ -70,14 +70,14 @@ public class TextFieldCellHelper<T> implements CellWidgetHelper<TextField, T> {
     }
 
     @Override
-    public void onStartEdit(Cell<T> cell, T item) {
+    public void onStartEdit(C cell, T item) {
         textField.setText(item == null ? "" : item.toString());
         textField.selectAll();
         listener.activate(textField, cell);
     }
 
     @Override
-    public void onUpdate(Cell<T> cell, T item) {
+    public void onUpdate(C cell, T item) {
         textField.setText(item == null ? "" : item.toString());
     }
 }
